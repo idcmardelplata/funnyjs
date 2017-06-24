@@ -120,6 +120,18 @@ const IO = f => ({
 IO.of = fn => IO(fn)
 
 module.exports = {
+  first,
+  rest,
+  reduce,
+  sum,
+  reverse,
+  map,
+  filter,
+  all,
+  any,
+  size,
+  max,
+  min,
   curry,
   chain,
   id,
