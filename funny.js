@@ -14,6 +14,51 @@ function curry(fn) {
   }
 }
 
+//first::([a]) -> a
+const first = xs => xs[0]
+
+//rest::([a]) -> [a]
+const rest = ([x, ...xs]) => xs
+
+//reduce::(f, a, [b]) -> a
+const reduce = (f, acc, xs) =>
+  xs.length === 0
+    ? acc
+    : reduce(f, f(acc, first(xs)), rest(xs))
+
+/*-------------------------------------Algunos catamorfismos comunes-------------------------------------------*/
+
+//sum::([a]) -> a
+const sum = xs => reduce((acc,el) => el + acc, 0, xs)
+
+//reverse::([a]) -> [a]
+const reverse = xs => reduce((acc, el) => [el].concat(acc), [], xs)
+
+//map::(f,[a]) -> [b]
+const map = (f, xs) => reduce((acc,x) => acc.concat(f(x)), [], xs )
+
+//filter::(f,[a]) -> [a]
+const filter = (f, xs) => reduce((acc, el) => f(el) ? acc.concat(el) : acc, [], xs)
+
+//all:(f,[a]) -> Boolean
+const all = (f, xs) => reduce((acc, x) => f(x) & acc ? true : false, true, xs )
+
+//any:(f,[a]) -> Boolean
+const any = (f,xs) => reduce((acc,x) => f(x) ? true : acc , false, xs)
+
+//size::([a]) -> Integer
+const size = xs => reduce((acc, x) => 1 + acc , 0, xs)
+
+//max::([a]) -> a
+const max = (xs) => reduce((acc, el) => el > acc ? el : acc, 0, xs)
+
+//min::([a]) -> a
+const min = (xs) => reduce((acc, el) => el < acc ? el : acc, Infinity , xs)
+
+
+/*-------------------------------------Fin de catamorfismos comunes-------------------------------------------*/
+
+
 //id::x -> x
 const id = x => x
 
