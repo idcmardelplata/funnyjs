@@ -8,8 +8,8 @@ function curry(fn) {
   var args = [];
   return function next() {
     args = args.concat(toArray(arguments));
-    return (args.length >= len) ? 
-      fn.apply(this, args.splice(0)) : 
+    return (args.length >= len) ?
+      fn.apply(this, args.splice(0)) :
       next;
   }
 }
@@ -35,16 +35,16 @@ const sum = xs => reduce((acc,el) => el + acc, 0, xs)
 const reverse = xs => reduce((acc, el) => [el].concat(acc), [], xs)
 
 //map::(f,[a]) -> [b]
-const map = (f, xs) => reduce((acc,x) => acc.concat(f(x)), [], xs )
+//const map = (f, xs) => reduce((acc,x) => acc.concat(f(x)), [], xs )
 
 //filter::(f,[a]) -> [a]
-const filter = (f, xs) => reduce((acc, el) => f(el) ? acc.concat(el) : acc, [], xs)
+const filter = curry((f, xs) => reduce((acc, el) => f(el) ? acc.concat(el) : acc, [], xs))
 
 //all:(f,[a]) -> Boolean
-const all = (f, xs) => reduce((acc, x) => f(x) & acc ? true : false, true, xs )
+const all = curry((f, xs) => reduce((acc, x) => f(x) & acc ? true : false, true, xs ))
 
 //any:(f,[a]) -> Boolean
-const any = (f,xs) => reduce((acc,x) => f(x) ? true : acc , false, xs)
+const any = curry((f,xs) => reduce((acc,x) => f(x) ? true : acc , false, xs))
 
 //size::([a]) -> Integer
 const size = xs => reduce((acc, x) => 1 + acc , 0, xs)
