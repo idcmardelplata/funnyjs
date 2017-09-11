@@ -1,7 +1,8 @@
-//curry::(x, y ,n...) -> (x) -> (y) -> (n..)
-const curry = ( f, arr = []) =>
-  (...args) =>
-  ( a => a.length === f.length ? f(...a) : curry(f, a)) ([...arr, ...args])
+//curry::(x, y ,n...) -> (x) -> (y) -> (n...)
+const curry = (f, ...args) =>
+  args.length >= f.length
+    ? f(...args)
+    : (...next) => curry(f, ...args, ...next)
 
 //first::([a]) -> a
 const first = xs => xs[0]
