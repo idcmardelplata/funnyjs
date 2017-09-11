@@ -1,7 +1,18 @@
+function toArray(args) {
+  return [].slice.call(args);
+}
+
 //curry::(x, y ,n...) -> (x) -> (y) -> (n..)
-const curry = ( f, arr = []) =>
-  (...args) =>
-  ( a => a.length === f.length ? f(...a) : curry(f, a)) ([...arr, ...args])
+function curry(fn) {
+  var len = fn.length;
+  var args = [];
+  return function next() {
+    args = args.concat(toArray(arguments));
+    return (args.length >= len) ?
+      fn.apply(this, args.splice(0)) :
+      next;
+  }
+}
 
 //first::([a]) -> a
 const first = xs => xs[0]
@@ -41,13 +52,14 @@ const max = (xs) => reduce((acc, el) => el > acc ? el : acc, 0, xs)
 //min::([a]) -> a
 const min = (xs) => reduce((acc, el) => el < acc ? el : acc, Infinity , xs)
 
+
 /*-------------------------------------Fin de catamorfismos comunes-------------------------------------------*/
 
 
 //id::x -> x
 const id = x => x
 
-//compose::(f,g,y,...fns) -> arg -> ()
+//compose::(f,g,y,...fns) -> ()
 const compose = (...fns) => x => fns.reduceRight((v,f) => f(v) , x)
 
 //map::f -> F -> F
@@ -56,9 +68,6 @@ const map = curry((f,F) => F.map(f))
 //chain::(f, M) -> M
 const chain = curry((f, m) => m.chain(f))
 
-
-/*-------------------------------------Algunas  monadas de uso cotidiano-------------------------------------------*/
-/*--------------------------------------------- Either Monad ------------------------------------------------------*/
 const Right = x => ({
   x,
   map: f => Right(f(x)),
@@ -82,12 +91,6 @@ Either.of = x => x == null ? Left(null) : Right(x)
 //fromNullable:: x ~> Either x
 const fromNullable = Either.of
 
-/*------------------------------------------ Fin Either Monad ------------------------------------------------------*/
-
-
-
-/*------------------------------------------ Maybe Monad------------------------------------------------------*/
-
 const Just = x => ({
   x,
   map: f => Just(f(x)),
@@ -105,12 +108,6 @@ const Maybe = {}
 //Maybe.of:: x ~> Maybe x
 Maybe.of = x => x != null ? Just(x) : Nothing(null)
 
-/*----------------------------------------- Fin Maybe Monad------------------------------------------------------*/
-
-
-
-
-/*------------------------------------------ IO Monad-----------------------------------------------------------*/
 const IO = f => ({
   runIO: f,
   map: fn => map(fn, runIO),
@@ -119,13 +116,13 @@ const IO = f => ({
 //IO.of:: fn -> IO fn
 IO.of = fn => IO(fn)
 
-/*----------------------------------------- Fin  IO Monad------------------------------------------------------*/
 module.exports = {
   first,
   rest,
   reduce,
   sum,
   reverse,
+  map,
   filter,
   all,
   any,
